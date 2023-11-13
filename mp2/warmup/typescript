@@ -1,0 +1,283 @@
+Script started on 2023-10-12 18:01:59-04:00 [TERM="xterm-256color" TTY="/dev/pts/68" COLUMNS="120" LINES="30"]
+jongsoo@pe15:~/cs341/mp2/warmup$ as --32 -al -o i[Ktiny.o i[Ktiny.s
+GAS LISTING tiny.s 			page 1
+
+
+   1              	# tiny.s: mp2warmup program
+   2              	#, ;, /* */ comment symbols
+   3              	# as --32 -al -o tiny.o tiny.s
+   4              	
+   5              	        .globl _start
+   6              	_start:
+   7 0000 B8080000 		movl $8, %eax
+   7      00
+   8 0005 83C003   		addl $0x3, %eax
+   9 0008 A3000200 		movl %eax, 0x200
+   9      00
+  10 000d CC       		int $3 # to trap back to Tutor at the end
+  11              	   	# to tell the assembler that this is the 
+  12              		# end of the code to be assembled.
+  13              		.end  
+jongsoo@pe15:~/cs341/mp2/warmup$ ld -m elf_i386 -N -Ttext 0x100100 -o tiny.lnx tiny.o
+jongsoo@pe15:~/cs341/mp2/warmup$ objdump -S tiny.lnx
+
+tiny.lnx:     file format elf32-i386
+
+
+Disassembly of section .text:
+
+00100100 <_start>:
+  100100:	b8 08 00 00 00       	mov    $0x8,%eax
+  100105:	83 c0 03             	add    $0x3,%eax
+  100108:	a3 00 02 00 00       	mov    %eax,0x200
+  10010d:	cc                   	int3   
+jongsoo@pe15:~/cs341/mp2/warmup$ exit
+exit
+
+Script done on 2023-10-12 18:03:47-04:00 [COMMAND_EXIT_CODE="0"]
+Script started on Thu 12 Oct 2023 06:07:25 PM EDT
+tuser@tutor-vserver:~$ mtip -f tiny.lnx
+For command help, type ~?
+For help on args, rerun without args
+Code starts at 0x100100
+Using board # 1 
+Please type <CR> to confirm console setting: 
+Setting console dev to COM2Console: colour EGA+ 80x25
+COM1 at 0x03f8 (irq = 4) is a 16550A
+COM2 at 0x02f8 (irq = 3) is a 16550A
+
+                 Welcome to UMB Tutor for the PC
+   UMB Tutor is a 32-bit protected-mode PC debugger/downloader,
+       based on Linux, UMB Tutor for m68k, and remote gdb.
+UMB Tutor is free software and you are welcome to distribute copies
+of it under certain conditions.  There is no warranty for this program.
+The copyright and warranty provisions follow the Gnu general public
+license, available for view in gdb and elsewhere.  Full sources available.
+--bugs, suggestions, questions to eoneil@cs.umb.edu
+
+Exception 3 at EIP=00057a9b: Breakpoint
+Tutor> ~downloading tiny.lnx
+
+.Done.
+
+Download done, setting EIP to 100100.
+Tutor> md 100100
+00100100    b8 08 00 00 00 83 c0 03 a3 00 02 00 00 cc d4 83 ................
+Tutor> go 100100
+Exception 3 at EIP=0010010e: Breakpoint
+Tutor> rd
+EAX=0000000b EBX=00000000   EBP=00057890
+EDX=00000000 ECX=0006967c   ESP=0005788c
+ESI=00013e10 EDI=00051ffc   EIP=0010010e
+EFLAGS=0202 (IF=1 SF=0 ZF=0 CF=0 OF=0)
+Tutor> md 200
+00000200    0b 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+Tutor> ms 200 00000000
+Tutor> md 200
+00000200    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+Tutor> rs eip 1000 100
+Tutor> t
+Exception 1 at EIP=00100105: Debugger interrupt
+Tutor> rd
+EAX=00000008 EBX=00000000   EBP=00057890
+EDX=00000000 ECX=0006967c   ESP=0005788c
+ESI=00013e10 EDI=00051ffc   EIP=00100105
+EFLAGS=0302 (IF=1 SF=0 ZF=0 CF=0 OF=0)
+Tutor> md 200
+00000200    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+Tutor> t
+Exception 1 at EIP=00100108: Debugger interrupt
+Tutor> rd
+EAX=0000000b EBX=00000000   EBP=00057890
+EDX=00000000 ECX=0006967c   ESP=0005788c
+ESI=00013e10 EDI=00051ffc   EIP=00100108
+EFLAGS=0302 (IF=1 SF=0 ZF=0 CF=0 OF=0)
+Tutor> md 200
+00000200    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+Tutor> t
+Exception 1 at EIP=0010010d: Debugger interrupt
+Tutor> rd
+EAX=0000000b EBX=00000000   EBP=00057890
+EDX=00000000 ECX=0006967c   ESP=0005788c
+ESI=00013e10 EDI=00051ffc   EIP=0010010d
+EFLAGS=0302 (IF=1 SF=0 ZF=0 CF=0 OF=0)
+Tutor> md 200
+00000200    0b 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+Tutor> t
+Exception 3 at EIP=0010010e: Breakpoint
+Tutor> ! ~q 
+Quit handler: 
+killing process 2256 Leaving board #1
+tuser@tutor-vserver:~$ exit
+exit
+
+Script done on Thu 12 Oct 2023 06:09:40 PM EDT
+Script started on Thu 12 Oct 2023 06:12:01 PM EDT
+]0;tuser@tutor-vserver: ~tuser@tutor-vserver:~$ gdb tiny.lnx [K
+GNU gdb (GDB) 7.0.1-debian
+Copyright (C) 2009 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "i486-linux-gnu".
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>...
+Reading symbols from /home/tuser/tiny.lnx...(no debugging symbols found)...done.
+(gdb) rat[K[K[Krat[K[K[Ktat[Kr rem /dev/ttyS0
+Remote debugging using /dev/ttyS0
+0x00100100 in _start ()
+(gdb) set $eip=0x100100
+(gdb) i reg
+eax            0x1	1
+ecx            0x6967c	431740
+edx            0x0	0
+ebx            0x0	0
+esp            0x5788c	0x5788c
+ebp            0x57890	0x57890
+esi            0x13e10	81424
+edi            0x51ffc	335868
+eip            0x100100	0x100100 <_start>
+eflags         0x206	[ PF IF ]
+cs             0x10	16
+ss             0x18	24
+ds             0x18	24
+es             0x18	24
+fs             0x18	24
+gs             0x18	24
+(gdb) x/x 0x200
+0x200:	0x00000000
+(gdb) set *(int *)0x200 = 0
+(gdb) x/x 2[K0x200
+0x200:	0x00000000
+(gdb) set $eip = 0x100100
+(gdb) x/4i 0x100100
+0x100100 <_start>:	mov    $0x8,%eax
+0x100105 <_start+5>:	add    $0x3,%eax
+0x100108 <_start+8>:	mov    %eax,0x200
+0x10010d <_start+13>:	int3   
+(gdb) b *0x10015[K05
+Breakpoint 1 at 0x100105
+(gdb) c
+Continuing.
+
+Breakpoint 1, 0x00100105 in _start ()
+(gdb) i reg
+eax            0x8	8
+ecx            0x6967c	431740
+edx            0x0	0
+ebx            0x0	0
+esp            0x5788c	0x5788c
+ebp            0x57890	0x57890
+esi            0x13e10	81424
+edi            0x51ffc	335868
+eip            0x100105	0x100105 <_start+5>
+eflags         0x306	[ PF TF IF ]
+cs             0x10	16
+ss             0x18	24
+ds             0x18	24
+es             0x18	24
+fs             0x18	24
+gs             0x18	24
+(gdb) b *0x100108
+Breakpoint 2 at 0x100108
+(gdb) c
+Continuing.
+
+Breakpoint 2, 0x00100108 in _start ()
+(gdb) i reg
+eax            0xb	11
+ecx            0x6967c	431740
+edx            0x0	0
+ebx            0x0	0
+esp            0x5788c	0x5788c
+ebp            0x57890	0x57890
+esi            0x13e10	81424
+edi            0x51ffc	335868
+eip            0x100108	0x100108 <_start+8>
+eflags         0x302	[ TF IF ]
+cs             0x10	16
+ss             0x18	24
+ds             0x18	24
+es             0x18	24
+fs             0x18	24
+gs             0x18	24
+(gdb) gb[K[Kb *0x10010d
+Breakpoint 3 at 0x10010d
+(gdb) c
+Continuing.
+
+Breakpoint 3, 0x0010010d in _start ()
+(gdb) i reg
+eax            0xb	11
+ecx            0x6967c	431740
+edx            0x0	0
+ebx            0x0	0
+esp            0x5788c	0x5788c
+ebp            0x57890	0x57890
+esi            0x13e10	81424
+edi            0x51ffc	335868
+eip            0x10010d	0x10010d <_start+13>
+eflags         0x302	[ TF IF ]
+cs             0x10	16
+ss             0x18	24
+ds             0x18	24
+es             0x18	24
+fs             0x18	24
+gs             0x18	24
+(gdb) x/x 0x0[K200
+0x200:	0x0000000b
+(gdb) q
+A debugging session is active.
+
+	Inferior 1 [Remote target] will be killed.
+
+Quit anyway? (y or n) y
+]0;tuser@tutor-vserver: ~tuser@tutor-vserver:~$ exit
+exit
+
+Script done on Thu 12 Oct 2023 06:16:11 PM EDT
+Script started on 2023-10-12 18:22:40-04:00 [TERM="xterm-256color" TTY="/dev/pts/8" COLUMNS="120" LINES="30"]
+jongsoo@pe15:~/cs341/mp2/warmup$ cat tiny.s
+# tiny.s: mp2warmup program
+#, ;, /* */ comment symbols
+# as --32 -al -o tiny.o tiny.s
+
+        .globl _start
+_start:
+	movl $8, %eax
+	addl $0x3, %eax
+	movl %eax, 0x200
+	int $3 # to trap back to Tutor at the end
+   	# to tell the assembler that this is the 
+	# end of the code to be assembled.
+	.end  
+
+jongsoo@pe15:~/cs341/mp2/warmup$ as --32 -o tiny.o tiny.s
+jongsoo@pe15:~/cs341/mp2/warmup$ od -x tiny.s
+0000000 2023 6974 796e 732e 203a 706d 7732 7261
+0000020 756d 2070 7270 676f 6172 0a6d 2c23 3b20
+0000040 202c 2a2f 2a20 202f 6f63 6d6d 6e65 2074
+0000060 7973 626d 6c6f 0a73 2023 7361 2d20 332d
+0000100 2032 612d 206c 6f2d 7420 6e69 2e79 206f
+0000120 6974 796e 732e 0a0a 2020 2020 2020 2020
+0000140 672e 6f6c 6c62 5f20 7473 7261 0a74 735f
+0000160 6174 7472 0a3a 6d09 766f 206c 3824 202c
+0000200 6525 7861 090a 6461 6c64 2420 7830 2c33
+0000220 2520 6165 0a78 6d09 766f 206c 6525 7861
+0000240 202c 7830 3032 0a30 6909 746e 2420 2033
+0000260 2023 6f74 7420 6172 2070 6162 6b63 7420
+0000300 206f 7554 6f74 2072 7461 7420 6568 6520
+0000320 646e 200a 2020 2309 7420 206f 6574 6c6c
+0000340 7420 6568 6120 7373 6d65 6c62 7265 7420
+0000360 6168 2074 6874 7369 6920 2073 6874 2065
+0000400 090a 2023 6e65 2064 666f 7420 6568 6320
+0000420 646f 2065 6f74 6220 2065 7361 6573 626d
+0000440 656c 2e64 090a 652e 646e 2020 0a0a
+0000456
+jongsoo@pe15:~/cs341/mp2/warmup$ tr -d '\015' <r[Ktiny.s > [Koutput_file
+jongsoo@pe15:~/cs341/mp2/warmup$ mc[Kv output_file tiny.s
+jongsoo@pe15:~/cs341/mp2/warmup$ exit
+exit
+
+Script done on 2023-10-12 18:24:45-04:00 [COMMAND_EXIT_CODE="0"]

@@ -1,0 +1,178 @@
+Script started on 2023-10-29 17:36:36-04:00 [TERM="xterm-256color" TTY="/dev/pts/1" COLUMNS="61" LINES="55"]
+jongsoo@pe15:~/cs341/mp2/part2+3$ pwd
+/home/jongsoo/cs341/mp2/part2+3
+jongsoo@pe15:~/cs341/mp2/part2+3$ ls -lg
+total 16
+-rw-r--r-- 1 cs341-1G 2082 Oct  5 19:10 makefile
+-rw-r--r-- 1 cs341-1G    0 Oct 29 17:36 mp2_part2_typescript
+-rw-r--r-- 1 cs341-1G  432 Oct  5 19:10 printbinc.c
+-rw-r--r-- 1 cs341-1G 1746 Oct 29 13:15 printbin.s
+-rw-r--r-- 1 cs341-1G  926 Oct  5 19:10 strncpyc.c
+jongsoo@pe15:~/cs341/mp2/part2+3$ cat *.s
+# printbin.s
+
+
+.text
+.global printbin
+
+printbin:
+    # Setup stack frame
+    pushl %ebp
+    movl %esp, %ebp
+
+    xorl %eax, %eax
+    xorl %edx, %edx     # Reset registers
+
+    movb 8(%ebp), %dl   # Get the parameter
+
+    xorl %esi, %esi     # Reset registers
+    xorl %edi, %edi
+
+    shrb $4, %dl         # Shift 4 to the right to get the high nibble
+    call donibble       # Call donibble for the high half
+
+    xorl %edx, %edx     # Reset %edx to get the second half
+    movb 8(%ebp), %dl   # Get the second half
+
+    andb $0xf, %dl      # Masking to get the low nibble
+
+    movb $8, num        # Resetting 8 '1000' for bit-testing in donibble
+    incl %esi           # Incrementing %esi to skip the space in outbin
+    call donibble       # Call donibble for the second half
+
+    movl $outbin, %eax  # Move the address of data to %eax to output
+    movb $8, num        # Reset 8 '1000' to test multiple times in tutor
+
+    # Remove stack frame
+    movl %ebp, %esp
+    popl %ebp
+
+    ret
+
+donibble:
+    movl $4, %ecx    # Set the counter to loop four times
+
+while:
+    testb num, %dl  # Test bit from '1000' to '0001'
+    je zero         # If ZF=1, jump
+
+    movb $0x31, outbin(,%esi,1)  # Move '1' otherwise to outbin
+    shrb num       # Shift right num to test the next bit
+    incl %esi      # Increment esi to place the next '0/1' in outbin
+    loop while     # Repeat loop, four times
+    ret
+
+zero:
+    movb $0x30, outbin(,%esi,1)  # Move '0' to outbin
+    shrb num       # Right shift to test the next bit
+    incl %esi      # Increment esi to place the next '0/1' in outbin
+    loop while     # Repeat four times, until ecx = 0
+
+    ret
+
+.data
+outbin:
+  .ascii "abcd efgh\n\0"  # Added newline and null terminator for correct output
+num:
+   .byte 8
+jongsoo@pe15:~/cs341/mp2/part2+3$ make A=printbin
+as --32 -o printbin.o printbin.s
+gcc -gdwarf-2 -gstrict-dwarf -march=i586 -m32 -fno-builtin -fno-stack-protector -nostdlib     -c -Wall -I/home/cheungr/serl/tutor-linux/include -c -o printbinc.o printbinc.c
+ld -m elf_i386 -N -Ttext 100100 -o printbin.lnx \
+	/home/cheungr/serl/tutor-linux/libc/startup0.o /home/cheungr/serl/tutor-linux/libc/startup.o \
+	printbinc.o printbin.o /home/cheungr/serl/tutor-linux/libc/libc.a
+rm -f syms;nm -n printbin.lnx>printbin.syms;ln -s printbin.syms syms
+jongsoo@pe15:~/cs341/mp2/part2+3$ exit
+exit
+
+Script done on 2023-10-29 17:37:28-04:00 [COMMAND_EXIT_CODE="0"]
+Script started on Sun 29 Oct 2023 05:38:57 PM EDT
+tuser@tutor-vserver:~$ exitmtip -f printbin.lnxscript mp2_part2_typescript
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[7Pmtip -f printbin.lnxscript mp2_part2_typescript
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[4Prm[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[4@script[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cclear[Kmtip -f printbin.lnxscp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/printbin.* 
+ .[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[K
+
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cscp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/printbin.* 
+ .
+jongsoo@users.cs.umb.edu's password: 
+
+printbin.lnx                                    0%    0     0.0KB/s   --:-- ETA
+printbin.lnx                                  100%   30KB  30.0KB/s   00:00    
+
+printbin.o                                      0%    0     0.0KB/s   --:-- ETA
+printbin.o                                    100%  808     0.8KB/s   00:00    
+
+printbin.s                                      0%    0     0.0KB/s   --:-- ETA
+printbin.s                                    100% 1746     1.7KB/s   00:00    
+
+printbin.syms                                   0%    0     0.0KB/s   --:-- ETA
+printbin.syms                                 100% 1089     1.1KB/s   00:00    
+tuser@tutor-vserver:~$ scp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/printbin.* 
+ .[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[K
+
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cmtip -f printbin.lnxscript mp2_part2_typescript
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[7Pmtip -f printbin.lnx
+For command help, type ~?
+For help on args, rerun without args
+Code starts at 0x100100
+Using board # 1 
+
+Please type <CR> to confirm console setting: 
+Setting console dev to COM2Console: colour EGA+ 80x25
+COM1 at 0x03f8 (irq = 4) is a 16550A
+COM2 at 0x02f8 (irq = 3) is a 16550A
+
+                 Welcome to UMB Tutor for the PC
+   UMB Tutor is a 32-bit protected-mode PC debugger/downloader,
+       based on Linux, UMB Tutor for m68k, and remote gdb.
+UMB Tutor is free software and you are welcome to distribute copies
+of it under certain conditions.  There is no warranty for this program.
+The copyright and warranty provisions follow the Gnu general public
+license, available for view in gdb and elsewhere.  Full sources available.
+--bugs, suggestions, questions to eoneil@cs.umb.edu
+
+Exception 3 at EIP=00057a9b: Breakpoint
+Tutor> ~downloading printbin.lnx
+
+........Done.
+
+
+
+Download done, setting EIP to 100100.
+Tutor> b 001001fe
+
+Tutor> go 100100
+
+enter the character's ascii value in hex: 
+ab
+Exception 3 at EIP=001001fe: Breakpoint
+Tutor> rd
+
+EAX=00000000 EBX=00101cf8   EBP=003fff98
+EDX=0000000a ECX=0006967c   ESP=003fff94
+ESI=00000000 EDI=00000000   EIP=001001fe
+EFLAGS=0a07 (IF=1 SF=0 ZF=0 CF=1 OF=1)
+Tutor> go
+
+Exception 3 at EIP=001001fe: Breakpoint
+Tutor> rd
+
+EAX=00000000 EBX=00101cf8   EBP=003fff98
+EDX=0000000b ECX=00000000   ESP=003fff94
+ESI=00000005 EDI=00000000   EIP=001001fe
+EFLAGS=0206 (IF=1 SF=0 ZF=0 CF=0 OF=0)
+Tutor> go
+
+The binary format for character � is 1010 1011
+
+Exception 3 at EIP=00100110: Breakpoint
+Tutor> 
+
+Tutor> 
+Quit handler: 
+killing process 2235 Leaving board #1
+tuser@tutor-vserver:~$ exit
+exit
+
+Script done on Sun 29 Oct 2023 05:40:36 PM EDT

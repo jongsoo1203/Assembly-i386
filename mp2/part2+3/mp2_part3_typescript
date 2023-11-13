@@ -1,0 +1,233 @@
+Script started on 2023-10-29 19:17:32-04:00 [TERM="xterm-256color" TTY="/dev/pts/63" COLUMNS="142" LINES="55"]
+jongsoo@pe15:~/cs341/mp2/part2+3$ 
+[Kjongsoo@pe15:~/cs341/mp2/part2+3$ 
+[Kjongsoo@pe15:~/cs341/mp2/part2+3$ pwd
+/home/jongsoo/cs341/mp2/part2+3
+jongsoo@pe15:~/cs341/mp2/part2+3$ ls -lg
+total 28
+-rw-r--r-- 1 cs341-1G 2082 Oct  5 19:10 makefile
+-rw-r--r-- 1 cs341-1G 6781 Oct 29 17:41 mp2_part2_typescript
+-rw-r--r-- 1 cs341-1G    0 Oct 29 19:17 mp2_part3_typescript
+-rw-r--r-- 1 cs341-1G  432 Oct  5 19:10 printbinc.c
+-rw-r--r-- 1 cs341-1G 1746 Oct 29 13:15 printbin.s
+-rw-r--r-- 1 cs341-1G  934 Oct 29 18:26 strncpyc.c
+-rw-r--r-- 1 cs341-1G  913 Oct 29 19:07 strncpy.s
+jongsoo@pe15:~/cs341/mp2/part2+3$ cat *.s
+# printbin.s
+
+
+.text
+.global printbin
+
+printbin:
+    # Setup stack frame
+    pushl %ebp
+    movl %esp, %ebp
+
+    xorl %eax, %eax
+    xorl %edx, %edx     # Reset registers
+
+    movb 8(%ebp), %dl   # Get the parameter
+
+    xorl %esi, %esi     # Reset registers
+    xorl %edi, %edi
+
+    shrb $4, %dl         # Shift 4 to the right to get the high nibble
+    call donibble       # Call donibble for the high half
+
+    xorl %edx, %edx     # Reset %edx to get the second half
+    movb 8(%ebp), %dl   # Get the second half
+
+    andb $0xf, %dl      # Masking to get the low nibble
+
+    movb $8, num        # Resetting 8 '1000' for bit-testing in donibble
+    incl %esi           # Incrementing %esi to skip the space in outbin
+    call donibble       # Call donibble for the second half
+
+    movl $outbin, %eax  # Move the address of data to %eax to output
+    movb $8, num        # Reset 8 '1000' to test multiple times in tutor
+
+    # Remove stack frame
+    movl %ebp, %esp
+    popl %ebp
+
+    ret
+
+donibble:
+    movl $4, %ecx    # Set the counter to loop four times
+
+while:
+    testb num, %dl  # Test bit from '1000' to '0001'
+    je zero         # If ZF=1, jump
+
+    movb $0x31, outbin(,%esi,1)  # Move '1' otherwise to outbin
+    shrb num       # Shift right num to test the next bit
+    incl %esi      # Increment esi to place the next '0/1' in outbin
+    loop while     # Repeat loop, four times
+    ret
+
+zero:
+    movb $0x30, outbin(,%esi,1)  # Move '0' to outbin
+    shrb num       # Right shift to test the next bit
+    incl %esi      # Increment esi to place the next '0/1' in outbin
+    loop while     # Repeat four times, until ecx = 0
+
+    ret
+
+.data
+outbin:
+  .ascii "abcd efgh\n\0"  # Added newline and null terminator for correct output
+num:
+   .byte 8
+# stmcpy.s
+
+
+.section .text
+
+.global mystrncpy
+
+mystrncpy:
+    pushl %ebp
+    movl %esp, %ebp
+
+    movl 8(%ebp), %edi # Destination string (s)
+    movl 12(%ebp), %esi  # Source string (ct)
+    movl 16(%ebp), %ecx # Maximum number of characters to copy (n)
+
+    xorl %eax, %eax    # Initialize EAX to 0
+
+copy_loop:
+    # Check if n is zero or we reached the end of the source string
+    cmpl $0, %ecx
+    jz end_copy
+
+    # Load a character from the source string and store it in the destination string
+    movb (%esi), %dl
+    movb %dl, (%edi)
+
+    # Increment source and destination pointers
+    incl %esi
+    incl %edi
+
+    # Decrement the character count
+    decl %ecx
+
+    # Check for null-termination of the source string
+    cmpb $0, %dl
+    jz end_copy
+
+    # Continue the loop
+    jmp copy_loop
+
+end_copy:
+    movl 8(%ebp), %eax   # Set EAX to the address of the destination string (s)
+
+    popl %ebp
+    ret
+    .end
+jongsoo@pe15:~/cs341/mp2/part2+3$ make A=strncpy
+as --32 -o strncpy.o strncpy.s
+gcc -gdwarf-2 -gstrict-dwarf -march=i586 -m32 -fno-builtin -fno-stack-protector -nostdlib     -c -Wall -I/home/cheungr/serl/tutor-linux/include -c -o strncpyc.o strncpyc.c
+ld -m elf_i386 -N -Ttext 100100 -o strncpy.lnx \
+	/home/cheungr/serl/tutor-linux/libc/startup0.o /home/cheungr/serl/tutor-linux/libc/startup.o \
+	strncpyc.o strncpy.o /home/cheungr/serl/tutor-linux/libc/libc.a
+rm -f syms;nm -n strncpy.lnx>strncpy.syms;ln -s strncpy.syms syms
+jongsoo@pe15:~/cs341/mp2/part2+3$ exit
+exit
+
+Script done on 2023-10-29 19:18:31-04:00 [COMMAND_EXIT_CODE="0"]
+Script started on Sun 29 Oct 2023 07:24:22 PM EDT
+tuser@tutor-vserver:~$ exitmtip -f printbin.lnxscp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/printbin.* 
+ .[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[K
+
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cmtip -f printbin.lnxscript mp2_part2_typescript
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[7Pmtip -f printbin.lnxscript mp2_part2_typescript
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[4Prm[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[4@script[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cclear[Kmtip -f printbin.lnxscp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/printbin.* 
+ .[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[K
+
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cscp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/printbin.* 
+ .[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[37Pmtip -f printbin.lnx
+
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cclear[Kscript mp2_part2_typescript
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[4Prm[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[4@script[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[7Pmtip -f printbin.lnxscript mp2_part2_typescript
+[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[7Pmtip -f printbin.lnxexit[Kscp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/printbin.* 
+ .[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[37Pmtip -f printbin.lnx
+
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[K[Kexitmtip -f printbin.lnxscp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/printbin.* 
+ .
+[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C.* .[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C.* . 
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1P
+
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[1P[1P[1P[1P[1P[1@s[1@t[1@r[1@n[1@cp.* . [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cy.* .
+.[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+
+
+jongsoo@users.cs.umb.edu's password: 
+
+strncpy.lnx                                     0%    0     0.0KB/s   --:-- ETA
+strncpy.lnx                                   100%   31KB  30.9KB/s   00:00    
+
+strncpy.o                                       0%    0     0.0KB/s   --:-- ETA
+strncpy.o                                     100%  560     0.6KB/s   00:00    
+
+strncpy.s                                       0%    0     0.0KB/s   --:-- ETA
+strncpy.s                                     100%  913     0.9KB/s   00:00    
+
+strncpy.syms                                    0%    0     0.0KB/s   --:-- ETA
+strncpy.syms                                  100% 1064     1.0KB/s   00:00    
+tuser@tutor-vserver:~$ scp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/strncpy.* .
+.[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[K
+
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cmtip -f printbin.lnxscp jongsoo@users.cs.umb.edu:cs341/mp2/part2+3/printbin.* 
+ .[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexit[K
+
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cmtip -f printbin.lnx[C[C[C[C[C[1P.lnx[1P.lnx[1P.lnx[1P.lnx[1P.lnx[1P.lnx[1P.lnx[1P.lnxs.lnxt.lnxr.lnxn.lnxc.lnxp.lnxt.lnx[1P.lnxt.lnx[1P.lnxy.lnx
+For command help, type ~?
+For help on args, rerun without args
+Code starts at 0x100100
+Using board # 1 
+
+Please type <CR> to confirm console setting: 
+Setting console dev to KBMONPlease type <CR> to confirm console setting: 
+Setting console dev to COM2Console: colour EGA+ 80x25
+COM1 at 0x03f8 (irq = 4) is a 16550A
+COM2 at 0x02f8 (irq = 3) is a 16550A
+
+                 Welcome to UMB Tutor for the PC
+   UMB Tutor is a 32-bit protected-mode PC debugger/downloader,
+       based on Linux, UMB Tutor for m68k, and remote gdb.
+UMB Tutor is free software and you are welcome to distribute copies
+of it under certain conditions.  There is no warranty for this program.
+The copyright and warranty provisions follow the Gnu general public
+license, available for view in gdb and elsewhere.  Full sources available.
+--bugs, suggestions, questions to eoneil@cs.umb.edu
+
+Exception 3 at EIP=00057a9b: Breakpoint
+Tutor> ~downloading strncpy.lnx
+
+........Done.
+
+
+
+Download done, setting EIP to 100100.
+Tutor> b 00100       go 100100
+
+Enter a string of characters:
+helloworld
+Enter the number of characters to copy:
+10
+The strncpy function returned the correct pointer value.
+The strncpy function copied the data correctly.
+The content of the first 10 characters of array s is: helloworld��?
+Exception 3 at EIP=00100110: Breakpoint
+Tutor> 
+
+Tutor> 
+Quit handler: 
+killing process 2407 Leaving board #1
+tuser@tutor-vserver:~$ exit
+exit
+
+Script done on Sun 29 Oct 2023 07:26:34 PM EDT

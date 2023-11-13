@@ -1,0 +1,678 @@
+Script started on Tue 03 Oct 2023 07:58:42 PM EDT
+tuser@tutor-vserver:~$ exitmtip -f tutor.lnx
+For command help, type ~?
+For help on args, rerun without args
+Code starts at 0x100100
+Using board # 1 
+Please type <CR> to confirm console setting: 
+Setting console dev to COM2Console: colour EGA+ 80x25
+COM1 at 0x03f8 (irq = 4) is a 16550A
+COM2 at 0x02f8 (irq = 3) is a 16550A
+
+                 Welcome to UMB Tutor for the PC
+   UMB Tutor is a 32-bit protected-mode PC debugger/downloader,
+       based on Linux, UMB Tutor for m68k, and remote gdb.
+UMB Tutor is free software and you are welcome to distribute copies
+of it under certain conditions.  There is no warranty for this program.
+The copyright and warranty provisions follow the Gnu general public
+license, available for view in gdb and elsewhere.  Full sources available.
+--bugs, suggestions, questions to eoneil@cs.umb.edu
+
+Exception 3 at EIP=00057a9b: Breakpoint
+Tutor> ~downloading tutor.lnx
+
+..........Done.
+
+Download done, setting EIP to 100100.
+Tutor> rd
+EAX=00000001 EBX=00000000   EBP=00057890
+EDX=00000000 ECX=0006967c   ESP=0005788c
+ESI=00013e10 EDI=00051ffc   EIP=00100100
+EFLAGS=0206 (IF=1 SF=0 ZF=0 CF=0 OF=0)
+Tutor> go 100100
+     cmd    help message
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       s    Stop
+PC-tutor> h
+     cmd    help message
+     ---    ------------
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       s    Stop
+PC-tutor> h md
+Memory display: MD <addr>
+PC-tutor> h ms
+Memory set: MS <addr> <value>
+PC-tutor> h s
+Stop
+PC-tutor> h h
+Help: H <command>
+PC-tutor> md 001024dc
+001024DC 80 24 10 00 00 00 00 00 00 00 00 00 00 01 01 00 .$..............
+PC-tutor> md 00102480
+00102480 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+PC-tutor> ms 00102480 23
+Set memory at address 00102480 to value 23
+PC-tutor> md 00102480
+00102480 23 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 #...............
+PC-tutor> ms 00102480 6
+Set memory at address 00102480 to value 06
+PC-tutor> md 00102480
+00102480 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+PC-tutor> md 12341223
+01234122 Exception 14 at EIP=00100491: Page fault
+Tutor> go    rd
+EAX=01234122 EBX=00102474   EBP=003fff38
+EDX=01234122 ECX=0006967c   ESP=003fff20
+ESI=003fff52 EDI=001025e8   EIP=00100491
+EFLAGS=10206 (IF=1 SF=0 ZF=0 CF=0 OF=0)
+Tutor> go 100100
+     cmd    help message
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       s    Stop
+PC-tutor> md 001024a0
+001024A0 D0 1C 10 00 08 04 10 00 D3 1C 10 00 ED 1C 10 00 ................
+PC-tutor> md 00101cd0
+00101CD0 6D 64 00 4D 65 6D 6F 72 79 20 64 69 73 70 6C 61 md.Memory displa
+PC-tutor> md 00101d22
+00101D22 73 00 53 74 6F 70 00 25 78 00 52 65 61 63 68 65 s.Stop.%x.Reache
+PC-tutor> ms 00101d22 78
+Set memory at address 00101D22 to value 78
+PC-tutor> h
+     cmd    help message
+     ---    ------------
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       x    Stop
+PC-tutor> h s
+     cmd    help message
+     ---    ------------
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       x    Stop
+PC-tutor> h x
+Stop
+PC-tutor> x
+Exception 3 at EIP=00100110: Breakpoint
+Tutor> go 100100
+     cmd    help message
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       x    Stop
+PC-tutor> ms 00101d22 73
+Set memory at address 00101D22 to value 73
+PC-tutor> h
+     cmd    help message
+     ---    ------------
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       s    Stop
+PC-tutor> s
+Exception 3 at EIP=00100110: Breakpoint
+Tutor> rd
+EAX=00000000 EBX=00102474   EBP=00000000
+EDX=001003f0 ECX=003fffe0   ESP=003ffff0
+ESI=003fff52 EDI=001025e8   EIP=00100110
+EFLAGS=0206 (IF=1 SF=0 ZF=0 CF=0 OF=0)
+Tutor> 
+Tutor> 
+Quit handler: 
+killing process 1968 Leaving board #1
+tuser@tutor-vserver:~$ exit
+exit
+
+Script done on Tue 03 Oct 2023 08:05:18 PM EDT
+Script started on 2023-10-03 20:10:05-04:00 [TERM="xterm-256color" TTY="/dev/pts/93" COLUMNS="65" LINES="55"]
+jongsoo@pe15:~/cs341/mp1$ ls -al
+total 180
+drwxr-sr-x 2 jongsoo cs341-1G  4096 Oct  3 20:06 .
+drwxr-s--- 5 jongsoo cs341-1G  4096 Oct  3 18:46 ..
+-rw-r--r-- 1 jongsoo cs341-1G  4971 Oct  1 17:05 cmds.c
+-rw-r--r-- 1 jongsoo cs341-1G  9648 Oct  3 18:51 cmds.o
+-rw-r--r-- 1 jongsoo cs341-1G  8056 Oct  3 18:51 cmds_u.o
+-rw-r--r-- 1 jongsoo cs341-1G  6743 Oct  3 20:09 discussion.txt
+-rw-r--r-- 1 jongsoo cs341-1G  3045 Sep 21 18:01 makefile
+-rw-r--r-- 1 jongsoo cs341-1G  2412 Sep 21 18:01 slex.c
+-rw-r--r-- 1 jongsoo cs341-1G  1846 Sep 21 18:01 slex.h
+-rw-r--r-- 1 jongsoo cs341-1G  7404 Oct  3 18:51 slex.o
+-rw-r--r-- 1 jongsoo cs341-1G  5996 Oct  3 18:51 slex_u.o
+-rw-r--r-- 1 jongsoo cs341-1G   556 Oct  3 18:51 stubstart.o
+-rw-r--r-- 1 jongsoo cs341-1G    97 Sep 21 18:01 stubstart.s
+-rw-r--r-- 1 jongsoo cs341-1G  1236 Oct  3 18:51 syms
+-rwxr-xr-x 1 jongsoo cs341-1G 21868 Oct  3 18:51 tutor
+-rw-r--r-- 1 jongsoo cs341-1G  2321 Sep 21 18:01 tutor.c
+-rwxr-xr-x 1 jongsoo cs341-1G 40916 Oct  3 18:51 tutor.lnx
+-rw-r--r-- 1 jongsoo cs341-1G  7508 Oct  3 18:51 tutor.o
+-rw-r--r-- 1 jongsoo cs341-1G  6036 Oct  3 18:51 tutor_u.o
+-rw-r--r-- 1 jongsoo cs341-1G  4364 Oct  3 20:06 typescript
+-rw-r--r-- 1 jongsoo cs341-1G   646 Oct  3 18:51 usyms
+jongsoo@pe15:~/cs341/mp1$ cat discussion.txt
+(1) What happens if you call md for an address that does not correspond to 
+    a physical memory address? What if you write to an address 
+    that's part of your tutor code? Do these questions have the same answers 
+    on LINUX and the SAPC?
+
+    On SAPC, Let's say when I run "md 00102480", it returns 06 which is xyz. However, if I input
+    invalid address like "md 12341234", it gives me Exception 14 at EIP = 0010045e: page fault. 
+    On the other hand, I can't run it on LINUX because it gives me segment fault. 
+    I believe they have their own security system to protect users to edit the memories.
+
+
+(2) Read the makefile to see where it puts the symbol table (nm output) 
+for your tutor code. Use that symbol table to figure out: 
+
+    (a) the address for test global variable xyz, which has value 6. 
+    Use tutor with that address to verify the value in memory. 
+    
+        It worked as I mentioned in the question1.
+    
+    (b) the address of the pointer variable pxyz. This address should be close to 
+    the one you determined in a, but not equal to it, since pxyz is the next variable 
+    in memory after xyz. Find the value of pxyz in memory. This should be equal to 
+    the address you found in (a) because of the initialization of this variable to &xyz. 
+    Note that you need to get 4 bytes of data for the value here.
+
+        When I run "md (the address of pxyz)", it gives me 80 24 10 00 -------, which is
+        the little-endian representation of 00102480, and 00102480 is the address for xyz. 
+    
+    (c) the address of the cmds array. Use this address to determine the very first pointer 
+    in the array, the string pointer to "md". Then find the 'm' and 'd' and terminating 
+    null of this string.  
+
+        cmds[] = { {"md"}, {"ms"}, {"h"}, {"s"}, {null} }. As you can see, cmds list is a
+        2D array that contains a command line for md, ms, h, s. Therefore, when I run
+        "md (the address of cmds)", it brings me to the first element in the cmds. However, 
+        the first element is an address to the "md" list; meaning cmds[0] = {{"md"}}. Therefore,
+        when I run another md to the first little-endian 4 bytes in cmds, it gives me the address of 
+        "m", "d", and goes on.
+
+    (d)change the stop command from 's' to 'x' while the tutor program is running. 
+    Can you change the tutor prompt the same way?
+
+        In order to change the command "s" to "x" while the tutor program is running,
+        I need to find the address of s and use "ms" command to set it to "s".
+        (ex) "ms (address of s) 78(hexadecimal of x)"
+        For the process, I checked the cmds[] where commands are located. I counted the
+        bytes from the first element "md" and added the hexadecimal number to cmds address.
+
+        (ex)  "md 001024a0" cmds //Check the cmds
+                "md 00101cd0" md.Memo--- //Go to the first element in cmds
+                    "md 00101d22" s.Stop-- //added 52 in hexadecimal and found s.
+                        "ms 00101d22 78" //changed "s" to "x"
+
+        However, in LINUX, it crashes on me. UNIX-tutor> md 0804c060
+                    0804C060 44 A0 04 08 A2 93 04 08 47 A0 04 08 61 A0 04 08 D.......G...a...
+                    UNIX-tutor> md 0804a044
+                    0804A044 6D 64 00 4D 65 6D 6F 72 79 20 64 69 73 70 6C 61 md.Memory displa
+                    UNIX-tutor> md 0804a096
+                    0804A096 73 00 53 74 6F 70 00 25 78 00 52 65 61 63 68 65 s.Stop.%x.Reache
+                    UNIX-tutor> ms 0804a096 78
+                    Segmentation fault (core dumped)
+
+(3) Read the nm output to determine where in memory the code resides, on SAPC and LINUX. 
+Hint: code symbols are marked t or T. Similarly determine where the data (set of variables) resides. 
+
+    In LINUX, the range of code symbols is between 08048090 and 080496a0. For global or static
+    variables, it is between 0804c040 and 0804c09c.
+    In SAPC, the range of code symbols is 00100100 to 00101b6c. The range of global or static 
+    variables (data symbols) is between 00102480 and 001024e8.
+
+    I got those range by looking at the lowest and highest memory address.
+    
+(4) Try to change the code itself so that tutor crashes 
+(any random change that actually takes effect should do this). What happens on SAPC? on LINUX?   
+
+    In LINUX, Because it has its own protection from editing address,
+    it gives me segmentation fault and stop running the program. 
+    SPAC does not have that protection. Therefore, when I deal with memories, it works.
+    However, when it crashes, it gives me Exception 14 at EIP = 0010045e: page fault.
+
+(5) You can't find the program stack using the nm output, but you can find it 
+by looking at the stack pointer, called %esp on the SAPC and LINUX. 
+Record your observations. Use "i reg" (info on registers) to see %esp in gdb and 
+"rd" to see registers in Tutor.  
+
+    Before and after running on SAPC, I could see the difference. For example, before was
+    esp = 0005788c. After became esp = 003ff3c0. On SAPC,
+    I was able to see ESP value before and after running tutor. They were different. 
+
+    On Linux,
+    I couldn't check ESP value until I ran the code. However, after running it, I got 0xffffd8ec
+    
+
+
+(6) More questions you should consider answering. What other interesting things have you tried? 
+What did you learn from this project? Was it worth the time it took?
+ What parts were the hardest, what parts the easiest, what parts most surprising, most interesting? 
+ What idiosyncrasies of C or LINUX or the SAPC or our installation slowed you down or helped you out? 
+ How might the assignment be improved?          
+
+    For md, getting the hexadecimal address part was easy. I just had to figure out
+    how I can only get 8 digits address using "%08X ". Using sscanf was amazing idea.
+    Making character(arguments) hexadecimal value(arguments) and storing in addr. Then,
+    if it successfully parsed, write our the byte at the current address.
+
+    For ms, it was much easier to create since I had better understanding of address and
+    sscanf. The only thing was that I had to say sscanf(----) == 2. I forgot that I am 
+    getting two input. Oh also, using two pointers for assigning new addr.
+
+    For h, it took me the longest time to fix this code. It made me look every slex files,
+    makefile, and tutor.c. I tried my best pull up the cmds[] list which contains
+    the commands, but it didn't work. Therefore, I took my time to go over other files
+    and realized slex.c has all the functions I need for help_command. I loved it. Also,
+    The Week2 second lecture helped me a lot questioning about what it means to use
+    "cp->cmdtoken, cp->help". 
+     Thank you.jongsoo@pe15:~/cs341/mp1$ cat *.c
+/******************************************************************
+*
+*   file:     cmds.c
+*   author:   betty o'neil
+*   date:     Sep 23, 2023
+*
+*   semantic actions for commands called by tutor (cs341, mp1)
+*
+*   revisions:
+*      9/90  eb   cleanup, convert function declarations to ansi
+*      9/91  eb   changes so that this can be used for hw1
+*      9/02  re   minor changes to quit command
+*/
+/* the Makefile arranges that #include <..> searches in the right
+   places for these headers-- 200920*/
+
+#include <stdio.h>
+#include "slex.h"
+/*===================================================================*
+*
+*   Command table for tutor program -- an array of structures of type
+*   cmd -- for each command provide the token, the function to call when
+*   that token is found, and the help message.
+*
+*   slex.h contains the typdef for struct cmd, and declares the
+*   cmds array as extern to all the other parts of the program.
+*   Code in slex.c parses user input command line and calls the
+*   requested semantic action, passing a pointer to the cmd struct
+*   and any arguments the user may have entered.
+*
+*===================================================================*/
+
+PROTOTYPE int stop(Cmd *cp, char *arguments);
+PROTOTYPE int mem_display(Cmd *cp, char *arguments);
+PROTOTYPE int mem_set(Cmd *cp, char *arguments);
+PROTOTYPE int help_command(Cmd *cp, char *arguments);
+
+/* command table */
+
+Cmd cmds[] = {{"md",  mem_display, "Memory display: MD <addr>"},
+              {"ms", mem_set, "Memory set: MS <addr> <value>"},
+              {"h", help_command, "Help: H <command>"},
+              {"s",   stop,        "Stop" },
+              {NULL,  NULL,        NULL}};  /* null cmd to flag end of table */
+
+char xyz = 6;  /* test global variable  */
+char *pxyz = &xyz;  /* test pointer to xyz */
+/*===================================================================*
+*		command			routines
+*
+*   Each command routine is called with 2 args, the remaining
+*   part of the line to parse and a pointer to the struct cmd for this
+*   command. Each returns 0 for continue or 1 for all-done.
+*
+*===================================================================*/
+
+int stop(Cmd *cp, char *arguments)
+{
+  return 1;			/* all done flag */
+}
+
+/*===================================================================*
+*
+*   mem_display: display contents of 16 bytes in hex
+*
+*/
+
+
+int mem_display(Cmd *cp, char *arguments)
+{
+  unsigned int addr;
+
+  if (sscanf(arguments, "%x", &addr) != 1) {
+    // If parsing the address fails, print diagnostic information
+      printf("Reached mem_display, passed argument string: |%s|\n", arguments);
+      printf("        help message: %s\n", cp->help);
+  }
+  
+  // Attempt to parse the hexadecimal address from the arguments string
+  // Print the formatted address
+  printf("%08X ", addr);
+  // Loop through 16 bytes of memory and print their hexadecimal values
+  // addr + i allows you to increment addr by i
+  for (int i = 0; i < 16; i++) {
+      printf("%02X ", *((unsigned char *)(addr + i)));
+  }
+  // Loop through the byte to print out the characters.
+  for (int j = 0; j < 16; j++) {
+      unsigned char byte = *((unsigned char *)(addr + j));
+      // Check if the byte is a printable ASCII character
+      if (byte >= 0x20 && byte <= 0x7E) {
+          // Print the ASCII character
+          printf("%c", byte);
+      } else {
+          // Print a '.' for non-printable characters
+          printf(".");
+      }
+  }
+  // Print a newline character to end the line
+  printf("\n");
+
+  // Return 0 to indicate the function has completed
+  return 0;	// not done
+}
+
+int mem_set(Cmd *cp, char *arguments) {
+    unsigned int addr, value;
+
+    // Use sscanf to convert the arguments to integers
+    if (sscanf(arguments, "%x %x", &addr, &value) == 2) {
+        // Set the memory at the given address to the specified value.
+        *(unsigned char *)addr = value;
+        printf("Set memory at address %08X to value %02X\n", addr, value);
+    } else {
+        printf("Invalid arguments for ms: %s\n", arguments);
+        printf("        help message: %s\n", cp->help);
+    }
+
+    return 0; // Not done
+}
+
+int help_command(Cmd *cp, char *arguments) 
+{
+  int status, cmd_index, pos;
+
+  // Reuse code that matches a command token 
+  // it is to check if the argument is valid.
+  status = slex(arguments, cmds, &cmd_index, &pos);
+
+  if (status < 0) {  // If no command token found in args
+    printf("     cmd    help message\n");
+    printf("     ---    ------------\n");
+
+    // Loop through the list of commands and print their help messages
+    for (cp = cmds; cp->cmdtoken; cp++) {
+      printf("%8s    %s\n", cp->cmdtoken, cp->help);
+    }
+  } else {  // Found a command token, just print that one's help message
+    printf("%s\n", cmds[cmd_index].help);
+    return 0;
+  }
+  return 0;
+}/******************************************************************
+*
+*   file:   slex.c
+*   author: betty o'neil
+*   date:   ?
+*
+*   simple lexical analyzer, front part of a parser                   
+*   --compare to UNIX tool "lex", general lexical analyzer            
+*   gets a (space-delimited) token from linebuf and tries to match    
+*   it to one of the cmdtokens in the provided cmdtable             
+*
+*   accepts:       
+*         linebuf--string to get token from                         
+*         cmdtable--cmdtable to use                                 
+*   returns:                                                          
+*         *cnum_ptr--command # (offset in cmdtable) or -1 if no match
+*         *pos_ptr--new place in linebuf after token match          
+*
+*   improvements needed:
+*         make token matching case independent
+*         skip whitespace, not just blanks
+*
+*   revisions: 
+*     9/90 cleanup, convert function headers to ansi form
+*
+*/
+
+#include <stdio.h>
+//#include <string.h>
+#include "slex.h"		/* for definition of type cmd */
+//#include slex.h
+
+int slex(char *linebuf,    /* string from user */
+         Cmd cmdtable[],   /* cmd table to use */
+         int *cnum_ptr,    /* returned command number */
+         int *pos_ptr)      /* returned new place in linebuf */
+{
+  int i = 0;
+  char token[MAXTOKENLEN];
+  int newpos;
+
+  if (gettoken(linebuf,token,&newpos)<0) /* get token from linebuf */
+    return -1;			/* couldn't find token */
+
+  while ((cmdtable[i].cmdtoken != NULL)) {
+    if (strcmp(cmdtable[i].cmdtoken,token)==0) {
+	*cnum_ptr = i;		/* success--return command # */
+	*pos_ptr = newpos;	/* and where we got to in linebuf */
+	return 0;
+    }
+    else
+      i++;			/* keep scanning table */
+  }
+  return -1;			/* no match */
+}
+
+/******************************************************************
+ * get one space-delimited token from string in linebuf, also return 
+ * new position in string 
+ */
+int gettoken(char *linebuf, char *token, int *pos_ptr)
+{
+  int i = 0;
+  int j = 0;
+
+  while (linebuf[i] == ' ')
+    i++;			/* skip blanks */
+  while (linebuf[i] != ' '&&linebuf[i]!='\0')
+    token[j++] = linebuf[i++];	/* copy chars to token */
+  if (j==0)
+    return -1;			/* nothing there */
+  else
+    {
+      token[j] = '\0';		/* null-terminate token */
+      *pos_ptr = i;		/* return place in linebuf we got to */
+      return 0;			/* success */
+    }
+}
+/******************************************************************
+*
+*   file:     tutor.c
+*   author:   eb
+*   date:     September, 1990
+*
+*   Driver for a "tutor" program to mimic and extend the MECB ROM TUTOR.
+* 
+*   built from betty o'neil's previous version
+*
+*   revisions:
+*   Jan '96: changed prompt to PC-tutor, now mimics floppy-based Tutor
+*/
+
+#include <stdio.h>
+#include "slex.h" 
+/* The preprocessor symbol SAPC is #defined in $pcinc/stdio.h.  This
+ * stdio.h is found by i386-gcc because of the -I flag in its compile command
+ * in the Makefile.  In the UNIX case, there is no such redirection,
+ * so the ordinary stdio.h is used, and it has no SAPC definition.
+ */
+#ifdef SAPC
+#define PROMPT "PC-tutor> "
+#else
+#define PROMPT "UNIX-tutor> "
+#endif
+int main(void);
+void getcmd(char *, int *, int *);
+
+int main()
+{
+  int done = 0;
+  int cnum,linepos;
+  char linebuf[LINELEN];
+  Cmd *cp;
+
+  printf("     cmd    help message\n");
+  for(cp = cmds; cp->cmdtoken; cp++) 
+      printf("%8s    %s\n", cp->cmdtoken, cp->help);
+
+  while (!done) {
+    /* get cmd token from user by parsing first part of line in linebuf-- */
+    getcmd(linebuf,&cnum,&linepos);
+    /* call implementation routine for matched cmd-- */
+    /* (remaining part of line to parse starts at linebuf+linepos) */
+    done = cmds[cnum].cmdfn(&cmds[cnum], linebuf+linepos); 
+  }
+  return 0;
+}
+
+/***********************************************************************
+*
+*  getcmd 
+*
+* Better than scanf--read whole line in, parse resulting string.
+* Uses slex package to match cmd token in first part of linebuf 
+* and return command # and where to continue parsing.
+* Getcmd loops until user provides proper command, so no error return.
+*/
+void getcmd(char *linebuf, 
+             int *cnum_ptr,   /* returned command number */
+             int *pos_ptr     /* position in linebuf (after cmd token) */
+           )
+{
+  int done = 0;
+
+  while (!done) {
+     printf( PROMPT );
+     gets(linebuf);		/* read line from user, null terminate */
+     /* match cmd token to get cnum--call slex package to do lookup-- */
+     if (slex( linebuf, cmds, cnum_ptr, pos_ptr)==0) 
+         done = 1;	/* success in matching cmd */
+     else
+         printf(" No such command\n");
+  }
+}
+jongsoo@pe15:~/cs341/mp1$ make clean
+rm -f *.o *.lnx tutor core
+jongsoo@pe15:~/cs341/mp1$ make tutor
+gcc -m32 -Wall -Wno-implicit -Wshadow -g -c -o tutor_u.o tutor.c
+gcc -m32 -Wall -Wno-implicit -Wshadow -g -c -o slex_u.o slex.c
+gcc -m32 -Wall -Wno-implicit -Wshadow -g -c -o cmds_u.o cmds.c
+as --32 -o stubstart.o  stubstart.s
+ld -m elf_i386 -o tutor tutor_u.o slex_u.o cmds_u.o stubstart.o -dynamic-linker /lib/ld-linux.so.2 -lc
+ld: tutor_u.o: in function `getcmd':
+/home/jongsoo/cs341/mp1/tutor.c:69: warning: the `gets' function is dangerous and should not be used.
+rm -f usyms; nm -vpt x tutor > usyms
+jongsoo@pe15:~/cs341/mp1$ make
+gcc -DSAPC -gdwarf-2 -gstrict-dwarf -march=i586 -m32 -fno-builtin -fno-stack-protector -nostdlib -c -Wall -I/home/cheungr/serl/tutor-linux/include  -c -o tutor.o tutor.c
+gcc -DSAPC -gdwarf-2 -gstrict-dwarf -march=i586 -m32 -fno-builtin -fno-stack-protector -nostdlib -c -Wall -I/home/cheungr/serl/tutor-linux/include  -c -o slex.o slex.c
+gcc -DSAPC -gdwarf-2 -gstrict-dwarf -march=i586 -m32 -fno-builtin -fno-stack-protector -nostdlib -c -Wall -I/home/cheungr/serl/tutor-linux/include  -c -o cmds.o cmds.c
+ld -m elf_i386 -N -Ttext 100100 -o tutor.lnx \
+/home/cheungr/serl/tutor-linux/libc/startup0.o /home/cheungr/serl/tutor-linux/libc/startup.o \
+tutor.o slex.o cmds.o /home/cheungr/serl/tutor-linux/libc/libc.a
+rm -f syms;nm -n tutor.lnx>syms
+jongsoo@pe15:~/cs341/mp1$ [Kjongsoo@pe15:~/cs341/mp1$ [Kjongsoo@pe15:~/cs341/mp1$ [Kjongsoo@pe15:~/cs341/mp1$ ./[K[Kg[K./tu[K[K[K[K./tutor
+     cmd    help message
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       s    Stop
+UNIX-tutor> md 0804c09c
+0804C09C 40 C0 04 08 47 43 43 3A 20 28 55 62 75 6E 74 75 @...GCC: (Ubuntu
+UNIX-tutor> md 0804c040
+0804C040 06 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ................
+UNIX-tutor> ms 0804c040 23
+Set memory at address 0804C040 to value 23
+UNIX-tutor> md 0804c040
+0804C040 23 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 #...............
+UNIX-tutor> h
+     cmd    help message
+     ---    ------------
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       s    Stop
+UNIX-tutor> h md
+Memory display: MD <addr>
+UNIX-tutor> h ms
+Memory set: MS <addr> <value>
+UNIX-tutor> h s
+Stop
+UNIX-tutor>  h  h h
+Help: H <command>
+UNIX-tutor> md 12341234
+Segmentation fault (core dumped)
+jongsoo@pe15:~/cs341/mp1$ ./tutor
+     cmd    help message
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       s    Stop
+UNIX-tutor> md 0804c060
+0804C060 44 A0 04 08 A2 93 04 08 47 A0 04 08 61 A0 04 08 D.......G...a...
+UNIX-tutor> md 0804a044
+0804A044 6D 64 00 4D 65 6D 6F 72 79 20 64 69 73 70 6C 61 md.Memory displa
+UNIX-tutor> md 0804a96
+Segmentation fault (core dumped)
+jongsoo@pe15:~/cs341/mp1$ ./tutor
+     cmd    help message
+      md    Memory display: MD <addr>
+      ms    Memory set: MS <addr> <value>
+       h    Help: H <command>
+       s    Stop
+UNIX-tutor> md 0804a096
+0804A096 73 00 53 74 6F 70 00 25 78 00 52 65 61 63 68 65 s.Stop.%x.Reache
+UNIX-tutor> ms 0804a96==    096 78
+Segmentation fault (core dumped)
+jongsoo@pe15:~/cs341/mp1$ [Kjongsoo@pe15:~/cs341/mp1$ gdb ./tutor
+[35;1m[35;1mGNU gdb [m[35;1m(Ubuntu 9.2-0ubuntu1~20.04.1) [m[35;1m9.2[m[35;1m
+[m[mCopyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from [32m./tutor[m...
+(gdb) bear[K[K[Kreak main
+Breakpoint 1 at [34m0x8049080[m: file [32mtutor.c[m, line 31.
+(gdb) run
+Starting program: /courses/cs341/f23/hefeiqiu/jongsoo/mp1/tutor 
+
+Breakpoint 1, [33mmain[m () at [32mtutor.c[m:31
+31	{
+(gdb) i reg $esp
+esp            0xffffd8ec          0xffffd8ec
+(gdb) q
+A debugging session is active.
+
+	Inferior 1 [process 4138088] will be killed.
+
+Quit anyway? (y or n) y
+jongsoo@pe15:~/cs341/mp1$ [Kjongsoo@pe15:~/cs341/mp1$ [Kjongsoo@pe15:~/cs341/mp1$ exit
+exit
+
+Script done on 2023-10-03 20:15:48-04:00 [COMMAND_EXIT_CODE="0"]

@@ -1,0 +1,116 @@
+(1) What happens if you call md for an address that does not correspond to 
+    a physical memory address? What if you write to an address 
+    that's part of your tutor code? Do these questions have the same answers 
+    on LINUX and the SAPC?
+
+    On SAPC, Let's say when I run "md 00102480", it returns 06 which is xyz. However, if I input
+    invalid address like "md 12341234", it gives me Exception 14 at EIP = 0010045e: page fault. 
+    On the other hand, I can't run it on LINUX because it gives me segment fault. 
+    I believe they have their own security system to protect users to edit the memories.
+
+
+(2) Read the makefile to see where it puts the symbol table (nm output) 
+for your tutor code. Use that symbol table to figure out: 
+
+    (a) the address for test global variable xyz, which has value 6. 
+    Use tutor with that address to verify the value in memory. 
+    
+        It worked as I mentioned in the question1.
+    
+    (b) the address of the pointer variable pxyz. This address should be close to 
+    the one you determined in a, but not equal to it, since pxyz is the next variable 
+    in memory after xyz. Find the value of pxyz in memory. This should be equal to 
+    the address you found in (a) because of the initialization of this variable to &xyz. 
+    Note that you need to get 4 bytes of data for the value here.
+
+        When I run "md (the address of pxyz)", it gives me 80 24 10 00 -------, which is
+        the little-endian representation of 00102480, and 00102480 is the address for xyz. 
+    
+    (c) the address of the cmds array. Use this address to determine the very first pointer 
+    in the array, the string pointer to "md". Then find the 'm' and 'd' and terminating 
+    null of this string.  
+
+        cmds[] = { {"md"}, {"ms"}, {"h"}, {"s"}, {null} }. As you can see, cmds list is a
+        2D array that contains a command line for md, ms, h, s. Therefore, when I run
+        "md (the address of cmds)", it brings me to the first element in the cmds. However, 
+        the first element is an address to the "md" list; meaning cmds[0] = {{"md"}}. Therefore,
+        when I run another md to the first little-endian 4 bytes in cmds, it gives me the address of 
+        "m", "d", and goes on.
+
+    (d)change the stop command from 's' to 'x' while the tutor program is running. 
+    Can you change the tutor prompt the same way?
+
+        In order to change the command "s" to "x" while the tutor program is running,
+        I need to find the address of s and use "ms" command to set it to "s".
+        (ex) "ms (address of s) 78(hexadecimal of x)"
+        For the process, I checked the cmds[] where commands are located. I counted the
+        bytes from the first element "md" and added the hexadecimal number to cmds address.
+
+        (ex)  "md 001024a0" cmds //Check the cmds
+                "md 00101cd0" md.Memo--- //Go to the first element in cmds
+                    "md 00101d22" s.Stop-- //added 52 in hexadecimal and found s.
+                        "ms 00101d22 78" //changed "s" to "x"
+
+        However, in LINUX, it crashes on me. UNIX-tutor> md 0804c060
+                    0804C060 44 A0 04 08 A2 93 04 08 47 A0 04 08 61 A0 04 08 D.......G...a...
+                    UNIX-tutor> md 0804a044
+                    0804A044 6D 64 00 4D 65 6D 6F 72 79 20 64 69 73 70 6C 61 md.Memory displa
+                    UNIX-tutor> md 0804a096
+                    0804A096 73 00 53 74 6F 70 00 25 78 00 52 65 61 63 68 65 s.Stop.%x.Reache
+                    UNIX-tutor> ms 0804a096 78
+                    Segmentation fault (core dumped)
+
+(3) Read the nm output to determine where in memory the code resides, on SAPC and LINUX. 
+Hint: code symbols are marked t or T. Similarly determine where the data (set of variables) resides. 
+
+    In LINUX, the range of code symbols is between 08048090 and 080496a0. For global or static
+    variables, it is between 0804c040 and 0804c09c.
+    In SAPC, the range of code symbols is 00100100 to 00101b6c. The range of global or static 
+    variables (data symbols) is between 00102480 and 001024e8.
+
+    I got those range by looking at the lowest and highest memory address.
+    
+(4) Try to change the code itself so that tutor crashes 
+(any random change that actually takes effect should do this). What happens on SAPC? on LINUX?   
+
+    In LINUX, Because it has its own protection from editing address,
+    it gives me segmentation fault and stop running the program. 
+    SPAC does not have that protection. Therefore, when I deal with memories, it works.
+    However, when it crashes, it gives me Exception 14 at EIP = 0010045e: page fault.
+
+(5) You can't find the program stack using the nm output, but you can find it 
+by looking at the stack pointer, called %esp on the SAPC and LINUX. 
+Record your observations. Use "i reg" (info on registers) to see %esp in gdb and 
+"rd" to see registers in Tutor.  
+
+    Before and after running on SAPC, I could see the difference. For example, before was
+    esp = 0005788c. After became esp = 003ff3c0. On SAPC,
+    I was able to see ESP value before and after running tutor. They were different. 
+
+    On Linux,
+    I couldn't check ESP value until I ran the code. However, after running it, I got 0xffffd8ec
+    
+
+
+(6) More questions you should consider answering. What other interesting things have you tried? 
+What did you learn from this project? Was it worth the time it took?
+ What parts were the hardest, what parts the easiest, what parts most surprising, most interesting? 
+ What idiosyncrasies of C or LINUX or the SAPC or our installation slowed you down or helped you out? 
+ How might the assignment be improved?          
+
+    For md, getting the hexadecimal address part was easy. I just had to figure out
+    how I can only get 8 digits address using "%08X ". Using sscanf was amazing idea.
+    Making character(arguments) hexadecimal value(arguments) and storing in addr. Then,
+    if it successfully parsed, write our the byte at the current address.
+
+    For ms, it was much easier to create since I had better understanding of address and
+    sscanf. The only thing was that I had to say sscanf(----) == 2. I forgot that I am 
+    getting two input. Oh also, using two pointers for assigning new addr.
+
+    For h, it took me the longest time to fix this code. It made me look every slex files,
+    makefile, and tutor.c. I tried my best pull up the cmds[] list which contains
+    the commands, but it didn't work. Therefore, I took my time to go over other files
+    and realized slex.c has all the functions I need for help_command. I loved it. Also,
+    The Week2 second lecture helped me a lot questioning about what it means to use
+    "cp->cmdtoken, cp->help". 
+     Thank you.
